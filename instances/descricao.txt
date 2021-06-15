@@ -1,0 +1,7 @@
+DIMENSION: <numero de vertices = n>
+P: <numero maximo de endereços visitados em cada rota>
+COST
+ <matriz de adjacencia n x n contendo o custo/tempo para se percorrer cada uma das arestas>
+
+
+OBS: Note que a sede da empresa é sempre considerada como o primeiro vertice
