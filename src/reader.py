@@ -1,6 +1,8 @@
 
 from problem import Problem
+
 import numpy as np
+   
 
 def ReadInstance(file_name):
 
@@ -18,6 +20,7 @@ def ReadInstance(file_name):
 
     for line, i in zip(file, range(n)):
         cost_matrix[i] = list(map(float, line.split()))
+
 
 
 
