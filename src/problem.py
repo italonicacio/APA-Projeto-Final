@@ -1,5 +1,6 @@
+from numpy import where, amin, Inf
 
-from numpy import where, amin
+
 
 class Problem:
 
@@ -12,36 +13,52 @@ class Problem:
 
         solution = []
         all_vertices_visited =  False
-        flags = [False for i in range(0, self.n)]
-        
+        visited_vertices  = [False for i in range(0, self.n)]
+        visited_vertices[0] = True
         total_agents = 0
         current_vertex = 0
+        iteration = 0
+        solution.append(current_vertex)
+
+
         while(not all_vertices_visited):
             
             k = 0
-            while(k < self.p):
-                
-                neighbor_vertex  = where( (self.cost_matrix[current_vertex] == amin(self.cost_matrix[current_vertex])) != (flags == False))[0][0]
-                
-                print( (self.cost_matrix[current_vertex] == amin(self.cost_matrix[current_vertex])) != (flags == False ) )
-                print(current_vertex," ", neighbor_vertex)
 
-                if flags[neighbor_vertex] == False:
-                    flags[neighbor_vertex] = True
-                    current_vertex = neighbor_vertex
-                else:
-                    all_vertices_visited = flags == True
+            while(k <= self.p):
+                
+                if( all(visited_vertices)):
                     break
 
-                print(flags)
-                print()
+                aux = 0
+                min_value = Inf
+                for j in range(0, self.n):
+                    
+                    if current_vertex != j:
+                        
+                        if self.cost_matrix[current_vertex][j] < min_value and visited_vertices[j] == False:
+                            min_value = self.cost_matrix[current_vertex][j]
+                            aux = j
 
-                
+                current_vertex = aux
+                solution.append(current_vertex)
+                visited_vertices[current_vertex] = True
+                print(visited_vertices)
+                print(current_vertex) 
 
                 k +=1
+
+            
+            current_vertex = 0
+            solution.append(current_vertex)            
             
             total_agents += 1
-            all_vertices_visited = True
-                    
+            
+            iteration += 1
+            all_vertices_visited =  all(visited_vertices)
+
+        print(visited_vertices) 
 
         return solution
+
+

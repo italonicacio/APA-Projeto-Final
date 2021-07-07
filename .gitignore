@@ -130,3 +130,7 @@ dmypy.json
 
 # Vscode
 .vscode
+
+# Garbage
+/src/VMP.py
+solution.txt

@@ -20,10 +20,6 @@ def ReadInstance(file_name):
 
     for line, i in zip(file, range(n)):
         cost_matrix[i] = list(map(float, line.split()))
-
-
-
-
     
     file.close()
 
