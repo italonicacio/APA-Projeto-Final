@@ -8,22 +8,24 @@ class Problem:
         self.n = n
         self.p = p
         self.cost_matrix = cost_matrix
+        self.routes = []
 
     def NearestNeighbor(self):
 
-        solution = []
         all_vertices_visited =  False
         visited_vertices  = [False for i in range(0, self.n)]
         visited_vertices[0] = True
         total_agents = 0
         current_vertex = 0
         iteration = 0
-        solution.append(current_vertex)
+        # solution.append(current_vertex)
 
 
         while(not all_vertices_visited):
             
             k = 0
+            solution = []
+            solution.append(current_vertex)
 
             while(k < self.p):
                 
@@ -50,13 +52,14 @@ class Problem:
             current_vertex = 0
             solution.append(current_vertex)            
             
+            self.routes.append(solution)
             total_agents += 1
             
             iteration += 1
             all_vertices_visited =  all(visited_vertices)
 
-        print(visited_vertices) 
+        
 
-        return solution
+        return self.routes
 
 
