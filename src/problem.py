@@ -25,7 +25,7 @@ class Problem:
             
             k = 0
 
-            while(k <= self.p):
+            while(k < self.p):
                 
                 if( all(visited_vertices)):
                     break
@@ -43,8 +43,6 @@ class Problem:
                 current_vertex = aux
                 solution.append(current_vertex)
                 visited_vertices[current_vertex] = True
-                print(visited_vertices)
-                print(current_vertex) 
 
                 k +=1
 
