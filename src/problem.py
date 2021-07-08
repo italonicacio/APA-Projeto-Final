@@ -18,8 +18,6 @@ class Problem:
         total_agents = 0
         current_vertex = 0
         iteration = 0
-        # solution.append(current_vertex)
-
 
         while(not all_vertices_visited):
             
@@ -61,5 +59,27 @@ class Problem:
         
 
         return self.routes
+
+    def SolutionCost(self):
+        total_cost = 0
+
+        for route in self.routes:
+            current_vertex = 0
+            
+            for neighbor_vertex in route:
+                
+                if neighbor_vertex != 0:
+                    total_cost += self.cost_matrix[current_vertex][neighbor_vertex]
+                    current_vertex = neighbor_vertex
+            
+            total_cost += self.cost_matrix[current_vertex][0]
+
+        return total_cost
+
+    # def TwoOPT(self):
+
+
+
+
 
 
