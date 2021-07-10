@@ -1,5 +1,5 @@
 from numpy import Inf
-import numpy as np
+from math import floor
 
 
 
@@ -96,29 +96,68 @@ class Problem:
 
 
 
-    # def TwOPTSwap(route):
+    def TwOPTSwap(self, route, i, j, size):
+        new_route = []
+        for c in range(0, i):
+            new_route.append(route[c])
 
+        dec = 0        
+        for c in range(i, j+1):
+            new_route.append(route[j - dec])
+            dec += 1
+
+        for c in range(j +1, size):
+            new_route.append(route[c])
     
+        return new_route
 
     def TwoOPT(self, route):
 
         best_route = route.copy()
+        new_route = best_route.copy()
         best_cost = self.RouteCost(best_route)
-
+        
+        size = len(route)
+        # print(best_route)
+        # print(best_cost)
 
 
         improve = 0
+        max_iteration = 20
 
-        while improve < 20:
+        while improve < max_iteration:
+            best_cost = self.RouteCost(best_route)
+            
+            for i in range(0, size-1):
+                for j in range(i+1, size):
+                    
+                    # if (j-i) == 1:
+                    #     aux = new_route[j]
+                    #     new_route[j] = new_route[i]
+                    #     new_route[i] = aux
+                    # else:
+                    #     for k in range(0, floor((j-i)/2)):
+                            
+                    #         aux = new_route[j-k]
+                    #         new_route[j-k] = new_route[i+k]
+                    #         new_route[i+k] = aux  
+                    new_route = self.TwOPTSwap(best_route, i,j, size)
+                    new_cost = self.RouteCost(new_route)
 
-            for i in range(0, self.n-1):
-                for j in range(i+1, self.n):
-                    print(j)
-
+                    if(new_cost < best_cost):
+                        improve = 0
+                        best_route = new_route.copy()
+                        best_cost = new_cost
+                        # print(best_cost)
+                        
             
             improve += 1
 
-            print(improve)
+        
+        # print(best_route)
+        # print(best_cost)
+        route[:] = best_route
+
 
 
 
