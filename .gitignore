@@ -134,3 +134,6 @@ dmypy.json
 # Garbage
 /src/VMP.py
 solution.txt
+cup1.txt
+cup2.txt
+cup3.txt
