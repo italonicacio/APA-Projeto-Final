@@ -1,4 +1,5 @@
-from numpy import where, amin, Inf
+from numpy import Inf
+import numpy as np
 
 
 
@@ -60,26 +61,64 @@ class Problem:
 
         return self.routes
 
-    def SolutionCost(self):
+    def RouteCost(self, route):
         total_cost = 0
 
-        for route in self.routes:
-            current_vertex = 0
+        current_vertex = 0
             
-            for neighbor_vertex in route:
+        for neighbor_vertex in route:
                 
-                if neighbor_vertex != 0:
-                    total_cost += self.cost_matrix[current_vertex][neighbor_vertex]
-                    current_vertex = neighbor_vertex
-            
-            total_cost += self.cost_matrix[current_vertex][0]
+            if neighbor_vertex != 0:
+                total_cost += self.cost_matrix[current_vertex][neighbor_vertex]
+                current_vertex = neighbor_vertex
+        
+        total_cost += self.cost_matrix[current_vertex][0]
 
         return total_cost
 
-    # def TwoOPT(self):
+
+    def TotalCost(self):
+        total_cost = 0
+
+        for route in self.routes:
+            total_cost += self.RouteCost(route)
+
+        return total_cost
+
+    def SaveSolution(self, file_name_to_save = 'solution.txt'):
+        
+        file = open(file_name_to_save, 'w')
+        for route in self.routes:
+            file.write(', '.join(map(str, route))+'; ')
+        
+        file.write('\nCost of Solution: '+str(self.TotalCost()))
+        file.close()
 
 
 
+    # def TwOPTSwap(route):
+
+    
+
+    def TwoOPT(self, route):
+
+        best_route = route.copy()
+        best_cost = self.RouteCost(best_route)
+
+
+
+        improve = 0
+
+        while improve < 20:
+
+            for i in range(0, self.n-1):
+                for j in range(i+1, self.n):
+                    print(j)
+
+            
+            improve += 1
+
+            print(improve)
 
 
 
