@@ -1,5 +1,6 @@
 from numpy import Inf
-from typing import overload, Any
+from copy import deepcopy
+
 
 
 class Problem:
@@ -100,7 +101,7 @@ class Problem:
                 total_cost += self.RouteCost(route)
         else:
             for route in routes:
-                total_cost += self.RouteCost(route)
+                total_cost += self.RouteCost(route) 
         return total_cost
         
 
@@ -113,7 +114,9 @@ class Problem:
         file.write('\nCost of Solution: '+str(self.TotalCost()))
         file.close()
 
-    def TwOPTSwap(self, route, i, j, size):
+    def TwOPTSwap(self, route, i, j):
+
+        size = len(route)
         new_route = []
         for c in range(0, i):
             new_route.append(route[c])
@@ -130,7 +133,7 @@ class Problem:
 
     def TwoOPT(self, route, max_iteration = 20):
 
-        best_route = route.copy()
+        best_route = route
         # new_route = best_route.copy()
         best_cost = self.RouteCost(best_route)
         
@@ -143,12 +146,12 @@ class Problem:
             
             for i in range(1, size-1):
                 for j in range(i+1, size):
-                    new_route = self.TwOPTSwap(best_route, i,j, size)
+                    new_route = self.TwOPTSwap(best_route, i,j)
                     new_cost = self.RouteCost(new_route)
 
                     if(new_cost < best_cost):
                         improve = 0
-                        best_route = new_route.copy()
+                        best_route = new_route
                         best_cost = new_cost
                                               
             
@@ -156,48 +159,50 @@ class Problem:
         
         route[:] = best_route
 
-    def TestTwOPTSwap(self, route, i, j, size):
-        new_route = []
-        for c in range(0, i):
-            new_route.append(route[c])
+    def TwOPTSwapSimulation(self, route, i, j, cost):
+        
+        aux_cost = cost
+        for c in range(i, j+2):
+            aux_cost -= self.cost_matrix[route[c-1]][route[c]]
 
-        dec = 0        
-        for c in range(i, j+1):
-            new_route.append(route[j - dec])
+        dec = 0
+        current = i -1
+        for c in range(i, j+1): 
+            aux_cost += self.cost_matrix[route[current]][route[j - dec]]
+            current = j - dec
             dec += 1
+        
+        aux_cost += self.cost_matrix[route[current]][route[j+1]]
+        return aux_cost
+            
 
-        for c in range(j +1, size):
-            new_route.append(route[c])
-    
-        return new_route
 
-    def TestTwoOPT(self, route, max_iteration = 20):
+    def TestTwoOPT(self, route):
 
         best_route = route.copy()
-        # new_route = best_route.copy()
+        
         best_cost = self.RouteCost(best_route)
+        best_i = 0
+        best_j = 0
         
         size = len(best_route)
-        
-        improve = 0
-
-        while improve < max_iteration:
-            # best_cost = self.RouteCost(best_route)
-            
-            for i in range(1, size-1):
-                for j in range(i+1, size):
-                    new_route = self.TwOPTSwap(best_route, i,j, size)
-                    new_cost = self.RouteCost(new_route)
-
-                    if(new_cost < best_cost):
-                        improve = 0
-                        best_route = new_route.copy()
-                        best_cost = new_cost
+         
+        for i in range(1, size-1):
+            for j in range(i+1, size - 1):
+                # new_route = self.TwOPTSwap(best_route, i,j, size)
+                # new_cost = self.RouteCost(new_route)
+                new_cost = self.TwOPTSwapSimulation(best_route, i , j, best_cost)
+                    
+                if(new_cost < best_cost):
+                        
+                    best_i = i
+                    best_j = j
+                    best_cost = new_cost
                                               
-            
-            improve += 1
         
-        route[:] = best_route
+        best_route = self.TwOPTSwap(best_route, best_i, best_j)
+
+        return best_route, best_cost
 
 
 
