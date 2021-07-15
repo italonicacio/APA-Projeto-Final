@@ -1,25 +1,24 @@
 from numpy import Inf
-from copy import deepcopy
-
-
+import pandas as pd
 
 class Problem:
 
-    def __init__(self, n, p, cost_matrix):
+    def __init__(self, n, p, cost_matrix, file_name = None):
         self.n = n
         self.p = p
         self.cost_matrix = cost_matrix
         self.routes = []
+        self.file_name = file_name
 
     def NearestNeighbor(self):
-
+        self.routes = []
         all_vertices_visited =  False
         visited_vertices  = [False for i in range(0, self.n)]
         visited_vertices[0] = True
         total_agents = 0
         current_vertex = 0
         iteration = 0
-
+        
         while(not all_vertices_visited):
             
             k = 0
@@ -62,20 +61,23 @@ class Problem:
         return self.routes
 
     # VND = Variable Neighbourhood Descent
-    def VND(self):
-        best_solution = self.NearestNeighbor()
-        new_solution = best_solution
-        k = 0
-        local_search = [self.TwoOPT]
-        while k < len(local_search):
+    def VND(self, routes):
+        
+        local_search = [self.Swap, self.TwoOPT, self.DarpTwoOPT]
+        for i in range(0, len(routes)):
             
-            local_search[k](new_solution)
-            if self.TotalCost(new_solution) < self.TotalCost(best_solution):
-                best_solution = new_solution
-                k = 1
-            else:
-                k += 1
+            best_route = routes[i]
+            new_route = best_route
+            k = 0
+            while k < len(local_search):
+                local_search[k](new_route)
+                if self.RouteCost(new_route) < self.RouteCost(best_route):
+                    best_route = new_route
+                    k = 0
+                else:
+                    k += 1
                 
+            routes[i] = best_route
 
     def RouteCost(self, route):
         total_cost = 0
@@ -104,7 +106,6 @@ class Problem:
                 total_cost += self.RouteCost(route) 
         return total_cost
         
-
     def SaveSolution(self, file_name_to_save = 'solution.txt'):
         
         file = open(file_name_to_save, 'w')
@@ -131,7 +132,48 @@ class Problem:
     
         return new_route
 
-    def TwoOPT(self, route, max_iteration = 20):
+    def TwOPTSwapSimulation(self, route, i, j, cost):
+        
+        aux_cost = cost
+        for c in range(i, j+2):
+            aux_cost -= self.cost_matrix[route[c-1]][route[c]]
+
+        dec = 0
+        current = i -1
+        for c in range(i, j+1): 
+            aux_cost += self.cost_matrix[route[current]][route[j - dec]]
+            current = j - dec
+            dec += 1
+        
+        aux_cost += self.cost_matrix[route[current]][route[j+1]]
+        return aux_cost
+
+    def TwoOPT(self, route):
+
+        best_route = route.copy()
+        
+        best_cost = self.RouteCost(best_route)
+        best_i = 0
+        best_j = 0
+        
+        size = len(best_route)
+         
+        for i in range(1, size-1):
+            for j in range(i+1, size - 1):
+                new_cost = self.TwOPTSwapSimulation(best_route, i , j, best_cost)
+                    
+                if(new_cost < best_cost):
+                        
+                    best_i = i
+                    best_j = j
+                    best_cost = new_cost
+                                              
+        
+        best_route = self.TwOPTSwap(best_route, best_i, best_j)
+
+        route[:] = best_route
+
+    def DarpTwoOPT(self, route, max_iteration = 20):
 
         best_route = route
         # new_route = best_route.copy()
@@ -158,51 +200,32 @@ class Problem:
             improve += 1
         
         route[:] = best_route
-
-    def TwOPTSwapSimulation(self, route, i, j, cost):
-        
-        aux_cost = cost
-        for c in range(i, j+2):
-            aux_cost -= self.cost_matrix[route[c-1]][route[c]]
-
-        dec = 0
-        current = i -1
-        for c in range(i, j+1): 
-            aux_cost += self.cost_matrix[route[current]][route[j - dec]]
-            current = j - dec
-            dec += 1
-        
-        aux_cost += self.cost_matrix[route[current]][route[j+1]]
-        return aux_cost
             
-
-
-    def TestTwoOPT(self, route):
-
-        best_route = route.copy()
+    def GainSwap(self, x0_antecessor, x0, x0_sucessor, y0_antecessor, y0, y0_sucessor):
+        del_distance = 0 ; add_distance = 0
+            
+        if(y0==x0_sucessor) or (x0_sucessor==y0_antecessor):
+            del_distance = self.cost_matrix[x0_antecessor][x0] + self.cost_matrix[y0][y0_sucessor]
+            add_distance = self.cost_matrix[x0_antecessor][y0] + self.cost_matrix[x0][y0_sucessor]
         
-        best_cost = self.RouteCost(best_route)
-        best_i = 0
-        best_j = 0
+        elif(x0==y0_sucessor) or (y0_sucessor==x0_antecessor):
+            del_distance = self.cost_matrix[y0_antecessor][y0] + self.cost_matrix[x0][x0_sucessor]
+            add_distance = self.cost_matrix[y0_antecessor][x0] + self.cost_matrix[y0][x0_sucessor]
         
-        size = len(best_route)
-         
-        for i in range(1, size-1):
-            for j in range(i+1, size - 1):
-                # new_route = self.TwOPTSwap(best_route, i,j, size)
-                # new_cost = self.RouteCost(new_route)
-                new_cost = self.TwOPTSwapSimulation(best_route, i , j, best_cost)
-                    
-                if(new_cost < best_cost):
-                        
-                    best_i = i
-                    best_j = j
-                    best_cost = new_cost
-                                              
+        else:
+            del_distance = self.cost_matrix[x0_antecessor][x0] + self.cost_matrix[x0][x0_sucessor] + self.cost_matrix[y0_antecessor][y0] + self.cost_matrix[y0][y0_sucessor]
+            add_distance = self.cost_matrix[x0_antecessor][y0] + self.cost_matrix[y0][x0_sucessor] + self.cost_matrix[y0_antecessor][x0] + self.cost_matrix[x0][y0_sucessor]
         
-        best_route = self.TwOPTSwap(best_route, best_i, best_j)
-
-        return best_route, best_cost
+        result = del_distance - add_distance
+        return(result)
+    
+    def Swap(self, route):
+        for i in range(1,len(route)-1):
+            for j in range(i+1,len(route)-1):
+                if(self.GainSwap(route[i-1],route[i],route[i+1],route[j-1],route[j],route[j+1])>0):
+                    aux = route[i]
+                    route[i] = route[j]
+                    route[j] = aux
 
 
 

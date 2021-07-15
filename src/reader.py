@@ -23,4 +23,4 @@ def ReadInstance(file_name):
     
     file.close()
 
-    return Problem(n, p, cost_matrix)
+    return Problem(n, p, cost_matrix, file_name)
