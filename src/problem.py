@@ -63,7 +63,7 @@ class Problem:
     # VND = Variable Neighbourhood Descent
     def VND(self, routes):
         
-        local_search = [self.Swap, self.TwoOPT, self.DarpTwoOPT]
+        local_search = [self.Swap, self.ModifiedTwoOPT, self.TwoOPT]
         for i in range(0, len(routes)):
             
             best_route = routes[i]
@@ -173,7 +173,7 @@ class Problem:
 
         route[:] = best_route
 
-    def DarpTwoOPT(self, route, max_iteration = 20):
+    def ModifiedTwoOPT(self, route, max_iteration = 20):
 
         best_route = route
         # new_route = best_route.copy()
