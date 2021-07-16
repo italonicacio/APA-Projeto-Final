@@ -1,24 +1,22 @@
 from numpy.core.numeric import Inf
-from pandas.core import algorithms
 from reader import *
 import time
 import pandas as pd
-from pandas.plotting import table
-import matplotlib.pyplot as plt
+
 
 def TimeMeasurement(function, *args, **kwargs):
     start_time = time.time()
     function(*args, **kwargs)
     end_time = time.time()
 
-    return round((end_time - start_time) * 1000)#milliseconds
+    return round((end_time - start_time) * 1000, 4)  #milliseconds
         
 
 def CreateRowForTable(problem, function, *args, **kwargs):
     mean_time = 0.0
     mean_cost = 0.0
     best_cost = Inf
-    max_interation = 10
+    max_interation = 1
     for i in range(0, max_interation):
 
         time = TimeMeasurement(function,*args, **kwargs)
@@ -41,43 +39,38 @@ def main():
                    'instances/n29p7A.txt',
                    'instances/n29p8B.txt',
                    'instances/n40p11.txt',
-                   'instances/n52p11.txt',
-                   'instances_apa_cup/cup1.txt',
-                   'instances_apa_cup/cup2.txt',
-                   'instances_apa_cup/cup3.txt']
+                   'instances/n52p11.txt']
    
     
-    columns_label = ['Media da solução', 'Melhor Solução', 'Media do tempo']
-    algorithms = ['Heuristica Construtiva', 'VND']
-    columns = pd.MultiIndex.from_product([algorithms, columns_label])
-    df = pd.DataFrame(columns=columns, index=instances)
-    print(df)
+    data = []
     
     for instance in instances:
         problem = ReadInstance(instance)
         
-        print('Instance:', instance[10:])
         row = []
         mean_time, mean_cost, best_cost = CreateRowForTable(problem, problem.NearestNeighbor)
-        row.append([mean_time, best_cost, mean_cost])
-        print('Nearest Neigh')
-        print(f"Time {mean_time}")
-        print(f"Cost {mean_cost}")
-        print(f"Best Cost {best_cost}\n")
-
+        row.append(mean_cost)
+        row.append(best_cost)
+        row.append(mean_time)
         
         mean_time, mean_cost, best_cost = CreateRowForTable(problem, problem.VND, problem.routes)
-        print('VND')
-        print(f"Time {mean_time}")
-        print(f"Cost {mean_cost}")
-        print(f"Best Cost {best_cost}\n")
         
-        row.append([mean_time, best_cost, mean_cost])
-        print(row)
+        row.append(mean_cost)
+        row.append(best_cost)
+        row.append(mean_time)
         
-   
+        data.append(row)
+
+        
+        
     
-    
+    columns_label = ['Media da solução', 'Melhor Solução', 'tempo(ms)']
+    algorithms = ['Heuristica Construtiva', 'VND']
+    columns = pd.MultiIndex.from_product([algorithms, columns_label])
+    df = pd.DataFrame(data, columns=columns, index=instances)
+    print(df)
+
+
     
 if __name__ == "__main__":
     main()
@@ -85,3 +78,6 @@ if __name__ == "__main__":
 
 
 
+# 'instances_apa_cup/cup1.txt',
+# 'instances_apa_cup/cup2.txt',
+# 'instances_apa_cup/cup3.txt'
