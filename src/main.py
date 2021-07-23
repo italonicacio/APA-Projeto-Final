@@ -12,11 +12,11 @@ def TimeMeasurement(function, *args, **kwargs):
     return round((end_time - start_time) * 1000, 4)  #milliseconds
         
 
-def CreateRowForTable(problem, function, *args, **kwargs):
+def CreateDataForTable(problem, function, *args, **kwargs):
     mean_time = 0.0
     mean_cost = 0.0
     best_cost = Inf
-    max_interation = 1
+    max_interation = 5
     for i in range(0, max_interation):
 
         time = TimeMeasurement(function,*args, **kwargs)
@@ -48,12 +48,12 @@ def main():
         problem = ReadInstance(instance)
         
         row = []
-        mean_time, mean_cost, best_cost = CreateRowForTable(problem, problem.NearestNeighbor)
+        mean_time, mean_cost, best_cost = CreateDataForTable(problem, problem.NearestNeighbor)
         row.append(mean_cost)
         row.append(best_cost)
         row.append(mean_time)
         
-        mean_time, mean_cost, best_cost = CreateRowForTable(problem, problem.VND, problem.routes)
+        mean_time, mean_cost, best_cost = CreateDataForTable(problem, problem.VND, problem.routes)
         
         row.append(mean_cost)
         row.append(best_cost)
@@ -71,13 +71,41 @@ def main():
     print(df)
 
 
+def mainCup():
+    
+    instances = [  'instances/n10p4.txt',
+                   'instances/n15p5.txt',
+                   'instances/n29p7A.txt',
+                   'instances/n29p8B.txt',
+                   'instances/n40p11.txt',
+                   'instances/n52p11.txt']
+
+    instances_cup = [   'instances_apa_cup/cup1.txt',
+                        'instances_apa_cup/cup2.txt',
+                        'instances_apa_cup/cup3.txt']
+   
+    for instance in instances_cup:
+        problem = ReadInstance(instance)
+
+        print(problem.file_name[18:])
+
+        print('Heuristica de Teste com vizinho mais proximo e o 2opt melhorado')
+        mean_time, mean_cost, best_cost = CreateDataForTable(problem, problem.HeuristicTest)
+        print('Custo Medio: ',mean_cost)
+        print('Melhor Custo:',best_cost)
+        print('tempo medio:',mean_time)
+        
+
+        print('VND')
+        mean_time, mean_cost, best_cost = CreateDataForTable(problem, problem.VND, problem.routes)
+        print('Custo Medio: ',mean_cost)
+        print('Melhor Custo:',best_cost)
+        print('tempo medio:',mean_time)
+        
+        print()
+
+        problem.SaveSolution(problem.file_name[18:])
+
     
 if __name__ == "__main__":
     main()
-
-
-
-
-# 'instances_apa_cup/cup1.txt',
-# 'instances_apa_cup/cup2.txt',
-# 'instances_apa_cup/cup3.txt'
