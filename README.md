@@ -1,7 +1,7 @@
 # Análise e Projeto de Algoritmo
 
 ### Descrição do Projeto
-O projeto final de Análise e Projeto de algoritmo(APA) propõe que resolvemos algumas instancias do problema de roteamento de veiculo(VRP) e com isso tivemos que implementar pelo menos uma heuristica construtiva, três movimentos de vizinhança e um algoritmo de busca local chamado VND. 
+O projeto final de Análise e Projeto de algoritmo(APA) propõe que resolvemos algumas instâncias do problema de roteamento de veículo (VRP) e com isso tivemos que implementar pelo menos uma heurística construtiva, três movimentos de vizinhança e um algoritmo de busca local chamado VND. 
 
 Para uma descrição mais detalhada do projeto [clique aqui](description/Trabalho_final.pdf).
 
@@ -11,8 +11,8 @@ Para uma descrição mais detalhada do projeto [clique aqui](description/Trabalh
 <!--ts-->
 * Heurística Construtiva
     * Vizinho Mais Proximo
-    * Vizinho Mais Proximo e uma Busca Local para o TSP da instancia e depois fizemos a separação dessa rota para se encaixar com o problema do projeto.
-        * Como foi implementado depois da entrega do projeto a saída do programa na função Main() apenas terá o algoritmo do vizinho mais proximo como heurística construtiva.
+    * Vizinho Mais Próximo e uma Busca Local para o TSP da instância e depois fizemos a separação dessa rota para se encaixar com o problema do projeto.
+        * Como foi implementado depois da entrega do projeto a saída do programa na função Main() apenas terá o algoritmo do vizinho mais próximo como heurística construtiva.
 * Movimentos de Vizinhança.
     * Intra-Rotas
         * 2-OPT
@@ -25,7 +25,7 @@ Para uma descrição mais detalhada do projeto [clique aqui](description/Trabalh
 ***
 
 ## Pré-requisitos
-Antes de testar em sua maquina verifique se tudo listado abaixo está instalado.
+Antes de testar em sua máquina verifique se tudo listado abaixo está instalado.
 <!--ts-->
 * [Python 3](https://www.python.org)
 * [Numpy](https://numpy.org)
@@ -49,9 +49,9 @@ cd src
 # Execute o arquivo main.py
 python3 main.py
 ```
-Ao executar o programa ele vai chamar a função main() aonde apenas fará a execução do programa quando foi feito para a entrega do projeto.
-
-Para testar a execução do programa com as instancias da copa basta alterar esse trecho do codigo de. 
+Ao executar o programa ele vai chamar a função main() onde apenas fará a execução do programa quando foi feito para a entrega do projeto.
+ 
+Para testar a execução do programa com as instâncias da copa basta alterar esse trecho do código de. 
 
 ```python
 if __name__ == "__main__":
