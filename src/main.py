@@ -31,15 +31,15 @@ def CreateDataForTable(problem, function, *args, **kwargs):
     mean_cost = mean_cost/max_interation
     return mean_time, mean_cost, best_cost
 
-def main():
+def Main():
 
     
-    instances = [  'instances/n10p4.txt',
-                   'instances/n15p5.txt',
-                   'instances/n29p7A.txt',
-                   'instances/n29p8B.txt',
-                   'instances/n40p11.txt',
-                   'instances/n52p11.txt']
+    instances = [  '../instances/n10p4.txt',
+                   '../instances/n15p5.txt',
+                   '../instances/n29p7A.txt',
+                   '../instances/n29p8B.txt',
+                   '../instances/n40p11.txt',
+                   '../instances/n52p11.txt']
    
     
     data = []
@@ -71,41 +71,36 @@ def main():
     print(df)
 
 
-def mainCup():
-    
-    instances = [  'instances/n10p4.txt',
-                   'instances/n15p5.txt',
-                   'instances/n29p7A.txt',
-                   'instances/n29p8B.txt',
-                   'instances/n40p11.txt',
-                   'instances/n52p11.txt']
+def MainCup():
 
-    instances_cup = [   'instances_apa_cup/cup1.txt',
-                        'instances_apa_cup/cup2.txt',
-                        'instances_apa_cup/cup3.txt']
+    instances = [   '../instances_apa_cup/cup1.txt',
+                    '../instances_apa_cup/cup2.txt',
+                    '../instances_apa_cup/cup3.txt']
    
-    for instance in instances_cup:
+    data = []
+    for instance in instances:
         problem = ReadInstance(instance)
 
-        print(problem.file_name[18:])
-
-        print('Heuristica de Teste com vizinho mais proximo e o 2opt melhorado')
-        mean_time, mean_cost, best_cost = CreateDataForTable(problem, problem.HeuristicTest)
-        print('Custo Medio: ',mean_cost)
-        print('Melhor Custo:',best_cost)
-        print('tempo medio:',mean_time)
+        row = []
+        mean_time, mean_cost, best_cost = CreateDataForTable(problem, problem.NearestNeighbor)
+        row.append(mean_cost)
+        row.append(best_cost)
+        row.append(mean_time)
         
-
-        print('VND')
         mean_time, mean_cost, best_cost = CreateDataForTable(problem, problem.VND, problem.routes)
-        print('Custo Medio: ',mean_cost)
-        print('Melhor Custo:',best_cost)
-        print('tempo medio:',mean_time)
+        row.append(mean_cost)
+        row.append(best_cost)
+        row.append(mean_time)
         
-        print()
+        data.append(row)
 
-        problem.SaveSolution(problem.file_name[18:])
+        # problem.SaveSolution(problem.file_name[18:])
 
+    columns_label = ['Media da solução', 'Melhor Solução', 'tempo(ms)']
+    algorithms = ['Heuristica Construtiva', 'VND']
+    columns = pd.MultiIndex.from_product([algorithms, columns_label])
+    df = pd.DataFrame(data, columns=columns, index=instances)
+    print(df)
     
 if __name__ == "__main__":
-    main()
+    MainCup()

@@ -1,6 +1,4 @@
 from numpy import Inf
-from numpy.core.overrides import set_module
-import pandas as pd
 
 
 class Problem:
@@ -12,61 +10,6 @@ class Problem:
         self.routes = []
         self.file_name = file_name
 
-    def initial_solucion_for_cheapest_insertion(self): #vizinho mais proximo
-        dimensao = self.n
-        rota=[]
-        cost_matrix = self.cost_matrix
-        low=9999;aux=0;guarda_indice=0;cidade_mais_prox = 0
-        matrix_flags_vmp = [False] * dimensao
-
-        for k in range(3):
-            aux = guarda_indice
-            low = 1000
-            rota.append(guarda_indice) #adicionando as cidades
-            matrix_flags_vmp[guarda_indice] = True #colocando cidade com a flag true
-            for i in range(dimensao):
-                if (cost_matrix[aux][i] != 0 and cost_matrix[aux][i] < low and matrix_flags_vmp[i] == False): #cidade mais proxima
-                    low = cost_matrix[aux][i]
-                    guarda_indice = i
-        return rota #retornando a rota final
-    
-    def cheapest_insertion(self):#iserção mais barata
-        rota = self.initial_solucion_for_cheapest_insertion()
-        dimensao = self.n
-        cost_matrix = self.cost_matrix
-        low = 99999;lower=99999;aresta=0; cidade_mais_prox = 0
-        rota_imb = []
-        matrix_flags_imb = [False] * dimensao
-
-        rota_imb.append(rota[0]) #3 cidades iniciais para imb já usando a rota do vizinho mais proximo para não pegar cidades aleatorias
-        rota_imb.append(rota[1])
-        rota_imb.append(rota[2])
-        matrix_flags_imb[rota[0]] = True
-        matrix_flags_imb[rota[1]] = True
-        matrix_flags_imb[rota[2]] = True
-
-        for j in range(dimensao - 3):
-            low = 99999#Qual a menor distancia de uma cidade entre as outras da rota
-            for k in range(len(rota_imb)):#Aqui começa o passo 2: encontra a cidade mais proxima do ciclo
-                for i in range(dimensao):
-                    if ((cost_matrix[rota_imb[k]][i] != 0) and (cost_matrix[rota_imb[k]][i] < low) and matrix_flags_imb[i] == False):
-                        cidade_mais_prox = i
-                        low = cost_matrix[rota_imb[k]][i]
-            low=99999
-
-            for z in range(len(rota_imb)):  #Passo 3: encontre uma aresta K que minimize dik + dkj - dij-> cidade i-> cidade K-> cidade J
-                for t in range(len(rota_imb)):
-                    if z != t and (((cost_matrix[rota_imb[z]][cidade_mais_prox]) + (cost_matrix[rota_imb[t]][cidade_mais_prox])) - (cost_matrix[rota_imb[z]][rota_imb[t]]) <= low):#se z=t então vai e volta pra mesmca cidade oque não é oque queremos 
-                        low = cost_matrix[cidade_mais_prox][rota_imb[z]] + cost_matrix[cidade_mais_prox][rota_imb[t]]-(cost_matrix[rota_imb[z]][rota_imb[t]])
-                        if (t > z):
-                            aresta = t
-                        else:
-                            aresta = z
-            rota_imb.insert(aresta, cidade_mais_prox)
-            matrix_flags_imb[cidade_mais_prox] = True
-        return rota_imb
-
-
     def HeuristicTest(self):
         self.routes = []
         all_vertices_visited =  False
@@ -76,36 +19,35 @@ class Problem:
         current_vertex = 0
         iteration = 0
         
-        # solution = []
-        # solution.append(current_vertex)  
-        # while(not all_vertices_visited):
+        solution = []
+        solution.append(current_vertex)  
+        while(not all_vertices_visited):
             
 
-        #     aux = 0
-        #     min_value = Inf
-        #     for j in range(0, self.n):
+            aux = 0
+            min_value = Inf
+            for j in range(0, self.n):
                     
-        #         if current_vertex != j:
+                if current_vertex != j:
                         
-        #             if self.cost_matrix[current_vertex][j] < min_value and visited_vertices[j] == False:
-        #                 min_value = self.cost_matrix[current_vertex][j]
-        #                 aux = j
+                    if self.cost_matrix[current_vertex][j] < min_value and visited_vertices[j] == False:
+                        min_value = self.cost_matrix[current_vertex][j]
+                        aux = j
 
-        #     current_vertex = aux
-        #     solution.append(current_vertex)
-        #     visited_vertices[current_vertex] = True
+            current_vertex = aux
+            solution.append(current_vertex)
+            visited_vertices[current_vertex] = True
            
             
             
-        #     total_agents += 1
+            total_agents += 1
             
-        #     iteration += 1
-        #     all_vertices_visited =  all(visited_vertices)
+            iteration += 1
+            all_vertices_visited =  all(visited_vertices)
 
-        # current_vertex = 0
-        # solution.append(current_vertex)  
+        current_vertex = 0
+        solution.append(current_vertex)  
 
-        solution = self.cheapest_insertion()
         # self.ModifiedTwoOPT(solution)
         
         self.VND([solution])
